@@ -85,6 +85,7 @@ NOBUTTON = parse_bool('NOBUTTON', False)
 NOLED = parse_bool('NOLED', False)
 BRIGHTNESS = parse_float('BRIGHTNESS', 255.0)
 EXTENDED_COLOURS = parse_bool('EXTENDED_COLOURS', False)
+PROMETHEUS_METRIC_PORT = int(os.getenv('PROMETHEUS_METRIC_PORT', '9100'))
 
 # Create a metrics
 PROCESSING_TIME = Histogram('fanshim_processing_seconds', 'Time spent processing fanshim state handler')
@@ -259,7 +260,7 @@ if __name__ == '__main__':
             if first_run:
                 first_run = False
                 # Start up the server to expose the metrics.
-                start_http_server(8000)
+                start_http_server(PROMETHEUS_METRIC_PORT)
             time.sleep(DELAY)
     except KeyboardInterrupt:
         pass

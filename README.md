@@ -37,10 +37,11 @@ docker run -d --privileged \
   --env NOLED=FALSE \
   --env BRIGHTNESS=255 \
   --env EXTENDED_COLOURS=TRUE \
-  --LOG_LEVEL=INFO \
+  --env LOG_LEVEL=INFO \
+  --env PROMETHEUS_METRIC_PORT=9100 \
   --name fanshim-python \
   tyriis/fanshim-python
 ```
 
 ## prometheus exporter
-Currently prometheus metrics exporter runs on port `8000`.
+Currently prometheus metrics exporter runs on port `9100` if not changed.
