@@ -28,10 +28,6 @@ docker buildx build \
 
 | Name | Description | Default |
 |:---|:------------|:--------|
-| **fanshim_processing_seconds** | _`Histogram`_ | `Time spent
-
-|    | Description | Default |
-|:---|:------------|:--------|
 | **LOG_LEVEL** | _`CRITICAL`_, _`FATAL`_, _`ERROR`_, _`WARNING`_, _`INFO`_, _`DEBUG`_, _`NOTSET`_ | `INFO` |
 | **PROMETHEUS_METRIC_PORT** | The port to run prometheus metrics exporter. | `9100` |
 | **OFF_THRESHOLD** | Temperature threshold in degrees C to disable fan. | `55.0` |
