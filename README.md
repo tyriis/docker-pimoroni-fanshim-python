@@ -1,6 +1,5 @@
-# Docker ARM64 for pimoroni-fanshim-python
+# Docker for [fanshim-python](https://github.com/pimoroni/fanshim-python)
 
-[fanshim-python](https://github.com/pimoroni/fanshim-python) the official fanshim library.
 
 [prometheus](https://github.com/prometheus/client_python) includes prometheus export for monitoring
 
