@@ -88,8 +88,8 @@ EXTENDED_COLOURS = parse_bool('EXTENDED_COLOURS', False)
 PROMETHEUS_METRIC_PORT = int(os.getenv('PROMETHEUS_METRIC_PORT', '9100'))
 
 # Create the metrics
-PROCESSING_TIME = Histogram('fanshim_processing_seconds', 'Time spent processing fanshim state handler')
-LOOP_EXECUTION_LATENCY = Summary('fanshim_processing_latency_seconds', 'Description of summary')
+buckets = (.004, .005, .006, .007, .01, .025, .05, .075, 0.1, float("inf"))
+PROCESSING_TIME = Histogram('fanshim_processing_seconds', 'Time spent processing fanshim state handler', buckets=buckets)
 CORE_TEMPERATURE = Gauge('fanshim_cpu_core_temperature', 'Temperature of the CPU core in °C')
 CORE_TEMPERATURE.set_function(lambda: get_cpu_temp())
 CORE_FREQUENCY = Gauge('fanshim_cpu_core_frequency', 'Frequenzy of the CPU core in MHz')
@@ -205,7 +205,6 @@ if not NOBUTTON:
 
 # Decorate function with metric.
 @PROCESSING_TIME.time()
-@LOOP_EXECUTION_LATENCY.time()
 def handle_fanshim():
     global is_fast
     global enable
