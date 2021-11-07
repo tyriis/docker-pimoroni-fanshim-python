@@ -87,38 +87,17 @@ BRIGHTNESS = parse_float('BRIGHTNESS', 255.0)
 EXTENDED_COLOURS = parse_bool('EXTENDED_COLOURS', False)
 PROMETHEUS_METRIC_PORT = int(os.getenv('PROMETHEUS_METRIC_PORT', '9100'))
 
-# Create a metrics
+# Create the metrics
 PROCESSING_TIME = Histogram('fanshim_processing_seconds', 'Time spent processing fanshim state handler')
-CORE_TEMPERATURE = Gauge('cpu_core_temperature', 'Temperature of the CPU core in °C')
+LOOP_EXECUTION_LATENCY = Summary('fanshim_processing_latency_seconds', 'Description of summary')
+CORE_TEMPERATURE = Gauge('fanshim_cpu_core_temperature', 'Temperature of the CPU core in °C')
 CORE_TEMPERATURE.set_function(lambda: get_cpu_temp())
-CORE_FREQUENCY = Gauge('cpu_core_frequency', 'Frequenzy of the CPU core in MHz')
+CORE_FREQUENCY = Gauge('fanshim_cpu_core_frequency', 'Frequenzy of the CPU core in MHz')
 CORE_FREQUENCY.set_function(lambda: get_cpu_freq().current)
-CORE_MAX_FREQUENCY = Gauge('cpu_core_max_frequency', 'Maximum frequenzy of the CPU core in MHz')
-CORE_FREQUENCY.set_function(lambda: get_cpu_freq().max)
+CORE_MAX_FREQUENCY = Gauge('fanshim_cpu_core_max_frequency', 'Maximum frequenzy of the CPU core in MHz')
+CORE_MAX_FREQUENCY.set_function(lambda: get_cpu_freq().max)
 FAN_STATE = Gauge('fanshim_fan_state', 'Fanshim fan state on or off')
 FAN_STATE.set(0)
-FAN_ON_THRESHOLD = Gauge('fanshim_fan_on_threshold', 'Temperature threshold in degrees C to enable fan')
-FAN_ON_THRESHOLD.set(ON_THRESHOLD)
-FAN_OFF_THRESHOLD = Gauge('fanshim_fan_off_threshold', 'Temperature threshold in degrees C to disable fan')
-FAN_OFF_THRESHOLD.set(OFF_THRESHOLD)
-CORE_LOW_TEMP = Gauge('cpu_core_low_temp', 'Temperature at which the LED is greeen')
-CORE_LOW_TEMP.set(LOW_TEMP)
-CORE_HIGH_TEMP = Gauge('cpu_core_high_temp', 'Temperature for which LED is red')
-CORE_HIGH_TEMP.set(HIGH_TEMP)
-UPDATE_DELAY = Gauge('fanshim_update_delay', 'Delay, in seconds, between temperature readings')
-UPDATE_DELAY.set(DELAY)
-PREEMPT_STATE = Gauge('fanshim_preempt_state', 'Monitor CPU frequency and activate cooling preemptively')
-PREEMPT_STATE.set(int(PREEMPT))
-VERBOSE_STATE = Gauge('fanshim_verbose_mode', 'Log temp and fan status messages')
-VERBOSE_STATE.set(int(VERBOSE))
-NOBUTTON_STATE = Gauge('fanshim_button_disabled', 'Disable button input')
-NOBUTTON_STATE.set(int(NOBUTTON))
-NOLED_STATE = Gauge('fanshim_led_disabled', 'Disable led control')
-NOLED_STATE.set(int(NOLED))
-LED_BRIGHTNESS = Gauge('fanshim_led_brightness', 'LED brightness, from 0 to 255')
-LED_BRIGHTNESS.set(int(BRIGHTNESS))
-LED_EXTENDED_COLOURS = Gauge('fanshim_led_extended_colours', 'Extend LED colours for outside of normal low to high range')
-LED_EXTENDED_COLOURS.set(int(EXTENDED_COLOURS))
 
 def clean_exit(signum, frame):
     set_fan(False)
@@ -224,11 +203,9 @@ if not NOBUTTON:
             time.sleep(0.04)
         led_busy.release()
 
-
-
-
 # Decorate function with metric.
 @PROCESSING_TIME.time()
+@LOOP_EXECUTION_LATENCY.time()
 def handle_fanshim():
     global is_fast
     global enable
