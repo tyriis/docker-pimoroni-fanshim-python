@@ -17,7 +17,7 @@ RUN pip install RPi.GPIO psutil prometheus-client python-json-logger fanshim
 FROM python:alpine3.14
 
 # for space and security reasons delete apk we dont need it
-RUN apk --purge del apk-tools
+# RUN apk --purge del apk-tools
 
 COPY --from=build /opt/venv /opt/venv
 
