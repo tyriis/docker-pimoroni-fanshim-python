@@ -24,6 +24,8 @@ COPY --from=build /opt/venv /opt/venv
 # Make sure we use the virtualenv:
 ENV PATH="/opt/venv/bin:$PATH"
 
+WORKDIR /app
+
 ADD main.py .
 
 CMD [ "main.py" ]
