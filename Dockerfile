@@ -1,5 +1,4 @@
-FROM python:slim-bullseye AS compile-image
-
+FROM python:slim-bullseye AS build
 RUN apt-get update
 
 RUN apt-get install -y --no-install-recommends build-essential gcc
@@ -8,16 +7,18 @@ RUN python -m venv /opt/venv
 # Make sure we use the virtualenv:
 ENV PATH="/opt/venv/bin:$PATH"
 
-RUN export CFLAGS=-fcommon && pip3 install fanshim psutil RPi.GPIO prometheus-client python-json-logger
+ENV CFLAGS="-fcommon"
 
-FROM python:slim-bullseye AS build-image
+RUN pip3 install RPi.GPIO psutil prometheus-client python-json-logger fanshim
 
-WORKDIR /app
+FROM python:slim-bullseye
 
-COPY --from=compile-image /opt/venv /opt/venv
+COPY --from=build /opt/venv /opt/venv
 
 # Make sure we use the virtualenv:
 ENV PATH="/opt/venv/bin:$PATH"
+
+WORKDIR /app
 
 ADD main.py .
 
